@@ -9,11 +9,12 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
 )
 
 var (
 	version  = "v2.1.0"
-	port     int
 	logLevel = "info"
 	logPath  = "log"
 	vms      bool
@@ -39,7 +40,20 @@ var (
 
 			pkg.InitConfig()
 			common.InitCommon()
-			handler.Bind(port, version, vars.Proxies)
+
+			// 获取 PORT 环境变量
+			port := os.Getenv("PORT")
+			if port == "" {
+				port = "8080" // 默认端口
+			}
+
+			// 将端口字符串转换为整数
+			portInt, err := strconv.Atoi(port)
+			if err != nil {
+				logrus.Fatalf("无效的端口号: %s", port)
+			}
+
+			handler.Bind(portInt, version, vars.Proxies)
 		},
 	}
 )
