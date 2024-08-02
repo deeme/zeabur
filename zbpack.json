@@ -1,4 +1,3 @@
 {
   "serverless": true
-  "build_command": "COPY --from=builder /src/bin/config.yaml config.yaml"
 }

@@ -3,15 +3,18 @@ package pkg
 import (
 	"bytes"
 	"github.com/spf13/viper"
-	"os"
+	"embed"
 )
+
+//go:embed config.yaml
+var configFile embed.FS
 
 var (
 	Config *viper.Viper
 )
 
 func LoadConfig() (*viper.Viper, error) {
-	data, err := os.ReadFile("config.yaml")
+	data, err := configFile.ReadFile("config.yaml")
 	if err != nil {
 		return nil, err
 	}
