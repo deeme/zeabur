@@ -55,7 +55,6 @@ func banner() {
 
 func main() {
 	cmd.PersistentFlags().StringVar(&vars.Proxies, "proxies", "", "本地代理 proxies")
-	cmd.PersistentFlags().IntVar(&port, "port", 54321, "服务端口 port")
 	cmd.PersistentFlags().StringVar(&logLevel, "log", logLevel, "日志级别: trace|debug|info|warn|error")
 	cmd.PersistentFlags().StringVar(&logPath, "log-path", logPath, "日志路径")
 	cmd.PersistentFlags().BoolVar(&vms, "models", false, "查看所有模型")
