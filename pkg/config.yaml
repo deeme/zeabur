@@ -8,9 +8,8 @@ server-conn:
   responseHeaderTimeout: 0
 
 x-addr: 172.30.0.1
-#white-addr:
-  - 112.120.125.51
-  - 54.254.162.138
+#white-addr: d8bf450e382cc50ef3d0aa31e7548660f1351aaabbe63b39ed2fe604968222d7f3428aa044c62d161a1d169303356c5400000012
+#  - 54.254.162.138
 
 # 开启特殊标记增强
 flags: true
