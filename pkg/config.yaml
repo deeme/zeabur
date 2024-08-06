@@ -7,21 +7,11 @@ server-conn:
   idleConnTimeout: 0
   responseHeaderTimeout: 0
 
-x-addr: 172.30.0.1
-#white-addr: d8bf450e382cc50ef3d0aa31e7548660f1351aaabbe63b39ed2fe604968222d7f3428aa044c62d161a1d169303356c5400000012
-#  - 54.254.162.138
-
 # 开启特殊标记增强
 flags: true
 
 # 图片访问
 domain: "https://all.deem.love"
-
-# 内调llm，用于绘图时文本转tags
-llm:
-  baseUrl: "http://127.0.0.1:8081"
-  model: "command-r-plus"
-  token: 67ad9c0e6b084e3eaa6b07b731b96bf1531eb97b16c2d5a9c0a174e53357449804823507660b9abd5fef7569cf9db6219140334222edb1d2a76dd84e60ac69dd00000028
 
 # hf 绘图接口配置化
 # 若旧接口不可用，可以到huggingface上查找同类型的接口配置
