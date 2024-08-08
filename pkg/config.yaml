@@ -10,65 +10,6 @@ server-conn:
 # 开启特殊标记增强
 flags: true
 
-# 图片访问
-domain: "https://all.deem.love"
-
-# 内调llm，用于绘图时文本转tags
-llm:
-  baseUrl: "http://127.0.0.1:8081"
-  model: "command-r-plus"
-  token: "kUbPWLagtquZkTAp9y3c4aFqDMRMmLMLuiXZNSVs"
-
-# lmsys fn、 trigger
-lmsys: [49 , 109]
-
-# hf 绘图接口配置化
-# 若旧接口不可用，可以到huggingface上查找同类型的接口配置
-# 参数替换：{{prompt}}、{{negative_prompt}}、{{sampler}}、{{style}}、{{seed}}
-hf:
-  animagine-xl-3.1:
-    baseUrl: https://boboiazumi-animagine-xl-3-1.hf.space
-    fn: [5, 61]
-    data: '[
-      "{{prompt}}",
-      "{{negative_prompt}}",
-      {{seed}},
-      1024,
-      1024,
-      8,
-      35,
-      "{{sampler}}",
-      "1024 x 1024",
-      "{{style}}",
-      "Standard v3.1",
-      true,
-      0.55,
-      1.5,
-      false,
-      false,
-      null,
-      0.65
-    ]'
-  dalle-4k:
-    baseUrl: https://mukaist-dalle-4k.hf.space
-  dalle-3-xl:
-    baseUrl: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
-
-coze:
-  websdk:
-    counter: 3
-    model: claude-35-sonnet-200k
-    accounts:
-     - email: kafka9139@gmail.com
-       password: gmi234567.
-       validate: bingco.zn@gmail.com
-     - email: k92558472@gmail.com
-       password: gm12345678.
-       validate: bingco.zn@gmail.com
-     - email: kafka1052@gmail.com
-       password: gm12345678.
-       validate: bingco.zn@gmail.com
-
 interpreter:
   baseUrl: http://127.0.0.1:8000
   echoCode: true
@@ -82,25 +23,3 @@ toolCall:
   id: -1
   enabled: true
   tasks: true
-
-# 图片放大，domain需要公网可访问的地址
-# key请到https://bigjpg.com获取，每月30次免费
-# 目前注册没有限制，可配置多个key轮询
-#magnify:
-#  - "xxx"
-
-######################
-# router
-port: 7860
-timeout: 300
-mappers:
-  - addr: http://127.0.0.1:8444
-    routes:
-      - path: ^/clewd/(.+)
-        rewrite: /$1
-  - addr: http://127.0.0.1:8081
-    routes:
-      - path: ^/proxies/(.+)
-        rewrite: /$1
-      - path: ^/file/(.+)
-        rewrite: /file/$1
