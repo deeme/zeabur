@@ -7,8 +7,66 @@ server-conn:
   idleConnTimeout: 0
   responseHeaderTimeout: 0
 
+x-addr: 172.30.0.1
+#white-addr:
+#  - 112.120.125.51
+#  - 54.254.162.138
+
 # 开启特殊标记增强
 flags: true
+
+# 图片访问
+domain: "https://gitdeem-all.hf.space"
+
+# 内调llm，用于绘图时文本转tags
+llm:
+  baseUrl: "http://127.0.0.1:8081"
+  model: "command-r-plus"
+  token: "kUbPWLagtquZkTAp9y3c4aFqDMRMmLMLuiXZNSVs"
+
+# hf 绘图接口配置化
+hf:
+  animagine-xl-3.1:
+    baseUrl: https://boboiazumi-animagine-xl-3-1.hf.space
+    fn: [5, 61]
+    data: '[
+      "{{prompt}}",
+      "{{negative_prompt}}",
+      {{seed}},
+      1024,
+      1024,
+      8,
+      35,
+      "{{sampler}}",
+      "1024 x 1024",
+      "{{style}}",
+      "Standard v3.1",
+      true,
+      0.55,
+      1.5,
+      false,
+      false,
+      null,
+      0.65
+    ]'
+  dalle-4k:
+    baseUrl: https://mukaist-dalle-4k.hf.space
+  dalle-3-xl:
+    baseUrl: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
+
+# lmsys fn、 trigger
+lmsys: [49 , 109]
+
+# gemini 自定义安全设置
+google:
+#  safes:
+#    - category: HARM_CATEGORY_HARASSMENT
+#      threshold: BLOCK_NONE
+
+claude:
+  pad: 0
+  cookies:
+    - ''
 
 interpreter:
   baseUrl: http://127.0.0.1:8000
@@ -23,3 +81,9 @@ toolCall:
   id: -1
   enabled: true
   tasks: true
+
+# 图片放大，domain需要公网可访问的地址
+# key请到https://bigjpg.com获取，每月30次免费
+# 目前注册没有限制，可配置多个key轮询
+#magnify:
+#  - "xxx"
