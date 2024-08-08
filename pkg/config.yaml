@@ -13,6 +13,12 @@ flags: true
 # 图片访问
 domain: "https://all.deem.love"
 
+# 内调llm，用于绘图时文本转tags
+llm:
+  baseUrl: "http://127.0.0.1:8081"
+  model: "command-r-plus"
+  token: "kUbPWLagtquZkTAp9y3c4aFqDMRMmLMLuiXZNSVs"
+
 # lmsys fn、 trigger
 lmsys: [49 , 109]
 
@@ -48,12 +54,20 @@ hf:
   dalle-3-xl:
     baseUrl: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
 
-serverless:
-  enabled: false
-  disabled-gpu: true
-  # 当无法找到指定的浏览器时可以在此配置路径
-  # execPath: /usr/bin/microsoft-edge
-  headless: new
+coze:
+  websdk:
+    counter: 3
+    model: claude-35-sonnet-200k
+    accounts:
+     - email: kafka9139@gmail.com
+       password: gmi234567.
+       validate: bingco.zn@gmail.com
+     - email: k92558472@gmail.com
+       password: gm12345678.
+       validate: bingco.zn@gmail.com
+     - email: kafka1052@gmail.com
+       password: gm12345678.
+       validate: bingco.zn@gmail.com
 
 interpreter:
   baseUrl: http://127.0.0.1:8000
