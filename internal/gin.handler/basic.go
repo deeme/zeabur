@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"chatgpt-adapter/internal/common"
 	"chatgpt-adapter/internal/gin.handler/response"
 	"chatgpt-adapter/internal/plugin"
 	"chatgpt-adapter/logger"
@@ -18,9 +19,11 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"slices"
+	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -51,6 +54,7 @@ func Bind(port int, version, proxies string) {
 	route.GET("/proxies/v1/models", models)
 	route.GET("/v1/models", models)
 	route.Static("/file/tmp/", "tmp")
+	route.GET("/log/helper", helper)
 
 	route.POST("/anthropic/v1/messages", messages)
 
@@ -62,6 +66,29 @@ func Bind(port int, version, proxies string) {
 		logger.Error(err)
 		os.Exit(1)
 	}
+}
+
+func helper(context *gin.Context) {
+	now := time.Now()
+	file := fmt.Sprintf("helper-%d-%02d-%02d.log", now.Year(), now.Month(), now.Day())
+	join := filepath.Join("log", file)
+	if !common.FileExists(join) {
+		context.String(http.StatusOK, "file not found: %s", file)
+		return
+	}
+
+	app := "tail"
+	maxLen := "100"
+	args := []string{"-n", maxLen, join}
+	cmd := exec.Command(app, args...)
+	output, err := cmd.Output()
+	if err != nil {
+		logger.Error(err)
+		context.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	context.String(http.StatusOK, string(output))
 }
 
 func encipher(context *gin.Context) {
@@ -135,7 +162,25 @@ func whiteIPHandler(context *gin.Context) {
 	slice := pkg.Config.GetStringSlice("white-addr")
 	if len(slice) != 0 {
 		addr := getIp(context)
-		if slices.Contains(slice, addr) {
+
+		next := true
+		for _, w := range slice {
+			if len(w) > 0 && w[0] == '!' {
+				if w[1:] == addr {
+					next = false
+					break
+				}
+				continue
+			}
+
+			next = false
+			if w == addr {
+				next = true
+				break
+			}
+		}
+
+		if next {
 			context.Next()
 		} else {
 			logger.Errorf("IP address %s is not whitelisted", addr)
@@ -214,6 +259,13 @@ func crosHandler(context *gin.Context) {
 
 	if method == "OPTIONS" {
 		context.Status(http.StatusOK)
+		return
+	}
+
+	if context.Request.RequestURI == "/" ||
+		context.Request.RequestURI == "/favicon.ico" {
+		//处理请求
+		context.Next()
 		return
 	}
 
