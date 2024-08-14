@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	negative  = "(deformed eyes, nose, ears, nose, leg, head), bad anatomy, ugly"
+	negative  = "(text:1.3), (strip cartoon:1.3), out of focus, fewer digits, cropped, signature, watermark"
 	userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
 )
 
@@ -416,7 +416,7 @@ func Ox004(ctx *gin.Context, model, samples, message string) (value string, err 
 	fn := []int{5, 49}
 	data := []interface{}{
 		message,
-		"(text:1.3), (strip cartoon:1.3), out of focus",
+		negative,
 		r.Intn(1490935504) + 9068457,
 		1024,
 		1024,
