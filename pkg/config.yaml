@@ -7,10 +7,9 @@ server-conn:
   idleConnTimeout: 0
   responseHeaderTimeout: 0
 
-#x-addr: 172.30.0.1
-#white-addr:
-#  - 112.120.125.51
-#  - 54.254.162.138
+white-addr:
+#  - '127.0.0.1'
+#  - 'xxx.xxx.xxx.xxx'
 
 # 开启特殊标记增强
 flags: true
@@ -24,7 +23,12 @@ llm:
   model: "command-r-plus"
   token: "kUbPWLagtquZkTAp9y3c4aFqDMRMmLMLuiXZNSVs"
 
+# lmsys fn、 trigger
+lmsys: [49 , 109]
+
 # hf 绘图接口配置化
+# 若旧接口不可用，可以到huggingface上查找同类型的接口配置
+# 参数替换：{{prompt}}、{{negative_prompt}}、{{sampler}}、{{style}}、{{seed}}
 hf:
   animagine-xl-3.1:
     base-url: https://boboiazumi-animagine-xl-3-1.hf.space
@@ -54,19 +58,20 @@ hf:
   dalle-3-xl:
     base-url: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
 
-# lmsys fn、 trigger
-lmsys: [49 , 109]
-
 # gemini 自定义安全设置
 google:
 #  safes:
 #    - category: HARM_CATEGORY_HARASSMENT
 #      threshold: BLOCK_NONE
 
+bing:
+  base-url: "https://edgeservices.bing.com/edgesvc"
+
 claude:
   pad: 0
   cookies:
-    - ''
+    - 'xxx1'
+    - 'xxx2'
 
 interpreter:
   base-url: http://127.0.0.1:8000
