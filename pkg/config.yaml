@@ -70,8 +70,9 @@ bing:
 claude:
   pad: 0
   cookies:
-    - 'xxx1'
-    - 'xxx2'
+    - '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'
+    - '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'
+    - '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'
 
 interpreter:
   base-url: http://127.0.0.1:8000
