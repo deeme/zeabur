@@ -7,7 +7,7 @@ server-conn:
   idleConnTimeout: 0
   responseHeaderTimeout: 0
 
-x-addr: 172.30.0.1
+#x-addr: 172.30.0.1
 #white-addr:
 #  - 112.120.125.51
 #  - 54.254.162.138
@@ -20,14 +20,14 @@ domain: "https://all.deem.love"
 
 # 内调llm，用于绘图时文本转tags
 llm:
-  baseUrl: "http://127.0.0.1:8081"
+  base-url: "http://127.0.0.1:8081"
   model: "command-r-plus"
   token: "kUbPWLagtquZkTAp9y3c4aFqDMRMmLMLuiXZNSVs"
 
 # hf 绘图接口配置化
 hf:
   animagine-xl-3.1:
-    baseUrl: https://boboiazumi-animagine-xl-3-1.hf.space
+    base-url: https://boboiazumi-animagine-xl-3-1.hf.space
     fn: [5, 61]
     data: '[
       "{{prompt}}",
@@ -50,9 +50,9 @@ hf:
       0.65
     ]'
   dalle-4k:
-    baseUrl: https://mukaist-dalle-4k.hf.space
+    base-url: https://mukaist-dalle-4k.hf.space
   dalle-3-xl:
-    baseUrl: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
+    base-url: https://ehristoforu-dalle-3-xl-lora-v2.hf.space
 
 # lmsys fn、 trigger
 lmsys: [49 , 109]
@@ -69,12 +69,15 @@ claude:
     - ''
 
 interpreter:
-  baseUrl: http://127.0.0.1:8000
+  base-url: http://127.0.0.1:8000
   echoCode: true
   ws: true
 
 custom-llm:
-  baseUrl: http://127.0.0.1:8080
+  - base-url: http://127.0.0.1:8080/v1
+    prefix: custom
+    use-proxies: false
+    tc: false
 
 # toolCall 默认配置化; 在 flags 关闭时也可用
 toolCall:
