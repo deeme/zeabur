@@ -5,7 +5,9 @@ import (
 	"chatgpt-adapter/logger"
 	"chatgpt-adapter/pkg"
 	"context"
+	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"strings"
 )
 
@@ -18,6 +20,8 @@ var (
 		"<|tool|>",
 		"<|end|>",
 	}
+
+	globalMatchers func() []Matcher
 )
 
 // 匹配器接口
@@ -33,9 +37,94 @@ type SymbolMatcher struct {
 	H func(index int, content string) (state int, result string)
 }
 
+func init() {
+	AddInitialized(func() {
+		obj := pkg.Config.Get("matcher")
+		if obj == nil {
+			return
+		}
+
+		if slice, ok := obj.([]interface{}); ok {
+			initMatchers(slice)
+		}
+	})
+}
+
+func initMatchers(slice []interface{}) {
+	if len(slice) == 0 {
+		return
+	}
+
+	globalMatchers = func() (matchers []Matcher) {
+		for _, it := range slice {
+			if m, o := it.(map[string]interface{}); o {
+				find, ok := m["find"]
+				if !ok {
+					continue
+				}
+
+				end, ok := m["end"]
+				if !ok {
+					end = ""
+				}
+
+				l, ok := m["len"]
+				if !ok {
+					l = "5"
+				}
+
+				findL, err := strconv.Atoi(l.(string))
+				if err != nil {
+					continue
+				}
+
+				str, ok := m["content"]
+				if !ok {
+					str = ""
+				}
+
+				values := split(str.(string))
+				if len(values) < 2 {
+					continue
+				}
+
+				c := regexp.MustCompile(strings.TrimSpace(values[0]), regexp.Compiled)
+				join := strings.TrimSpace(values[1])
+
+				matchers = append(matchers, &SymbolMatcher{
+					Find: find.(string),
+					H: func(index int, content string) (state int, result string) {
+						if end != "" {
+							if !strings.Contains(content, end.(string)) {
+								return vars.MatMatching, content
+							}
+						} else {
+							r := []rune(content)
+							if index+findL > len(r)-1 {
+								return vars.MatMatching, content
+							}
+						}
+
+						result, err = c.Replace(content, join, -1, -1)
+						if err != nil {
+							logger.Warn("compile failed: "+values[0], err)
+							return vars.MatMatched, content
+						}
+
+						return vars.MatMatched, result
+					},
+				})
+			}
+		}
+		return
+	}
+}
+
 func NewMatchers() []Matcher {
 	slice := make([]Matcher, 0)
-	// todo 内置一些过滤器
+	if globalMatchers != nil {
+		slice = append(slice, globalMatchers()...)
+	}
 	return slice
 }
 
