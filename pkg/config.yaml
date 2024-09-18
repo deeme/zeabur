@@ -64,6 +64,10 @@ google:
 #    - category: HARM_CATEGORY_HARASSMENT
 #      threshold: BLOCK_NONE
 
+# cohere 自定义安全设置，目前仅兼容 Command R 08-2024、Command R+ 08-2024 及更新机型
+cohere:
+  safety: CONTEXTUAL # NONE | CONTEXTUAL | STRICT
+
 bing:
   base-url: "https://edgeservices.bing.com/edgesvc"
 
@@ -139,11 +143,13 @@ toolCall:
 # 用于处理llm响应时的内容
 # find: 开头匹配
 # end: 结束匹配
-# content: 正则处理
+# content: 正则处理,用于正则替换。例如实现CoT内容屏蔽，达到类似openai_o1的效果
+# desc: 可以在find命中时给前端反馈一些简单文字
 matcher:
  - find: <!-- Attack
    end: -->
    content: "<!-- Attack [\\s\\S]+ -->:"
  - find: <thinking>
    end: </thinking>
-   content: "<thinking>[\\s\\S]+<\\/thinking>:"
+   content: "<thinking>[\\s\\S]+<\\/thinking>:thinking..."
+   desc: desc Response
