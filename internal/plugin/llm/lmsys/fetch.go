@@ -79,7 +79,7 @@ func partTwo(ctx context.Context, proxies, cookies, hash string, opts options) e
 		Proxies(proxies).
 		POST(baseUrl+"/queue/join").
 		JHeader().
-		Ja3("yes").
+		Ja3().
 		Header("User-Agent", ua).
 		Header("Cookie", cookies).
 		Header("Origin", baseUrl).
@@ -111,7 +111,7 @@ func partTwo(ctx context.Context, proxies, cookies, hash string, opts options) e
 	response, err = emit.ClientBuilder(plugin.HTTPClient).
 		Context(ctx).
 		Proxies(proxies).
-		Ja3("yes").
+		Ja3().
 		GET(baseUrl+"/queue/data").
 		Query("session_hash", hash).
 		Header("User-Agent", ua).
@@ -154,7 +154,7 @@ func partThree(ctx context.Context, proxies, cookies, hash string, opts options)
 		Proxies(proxies).
 		POST(baseUrl+"/queue/join").
 		JHeader().
-		Ja3("yes").
+		Ja3().
 		Header("User-Agent", ua).
 		Header("Cookie", cookies).
 		Header("Origin", baseUrl).
@@ -184,7 +184,7 @@ func partThree(ctx context.Context, proxies, cookies, hash string, opts options)
 	response, err = emit.ClientBuilder(plugin.HTTPClient).
 		Context(ctx).
 		Proxies(proxies).
-		Ja3("yes").
+		Ja3().
 		GET(baseUrl+"/queue/data").
 		Query("session_hash", hash).
 		Header("User-Agent", ua).
@@ -289,7 +289,7 @@ func partOne(ctx context.Context, proxies, token string, opts *options, messages
 		},
 	}
 
-	fn := extCookies(token)
+	fn := extCookies(token, opts.model)
 	if fn == nil {
 		return "", logger.WarpError(errors.New("invalid fn_index & trigger_id"))
 	}
@@ -303,7 +303,7 @@ func partOne(ctx context.Context, proxies, token string, opts *options, messages
 		Proxies(proxies).
 		POST(baseUrl+"/queue/join").
 		JHeader().
-		Ja3("yes").
+		Ja3().
 		Header("User-Agent", ua).
 		Header("Cookie", cookies).
 		Header("Origin", baseUrl).
@@ -335,7 +335,7 @@ func partOne(ctx context.Context, proxies, token string, opts *options, messages
 	response, err = emit.ClientBuilder(plugin.HTTPClient).
 		Context(ctx).
 		Proxies(proxies).
-		Ja3("yes").
+		Ja3().
 		GET(baseUrl+"/queue/data").
 		Query("session_hash", hash).
 		Header("User-Agent", ua).
@@ -377,25 +377,47 @@ func partOne(ctx context.Context, proxies, token string, opts *options, messages
 	return cookies, nil
 }
 
-func extCookies(token string) (fn []int) {
+func extCookies(token, model string) (fn []int) {
 	token = strings.TrimSpace(token)
-	if len(token) > 2 && token[0] == '[' && token[len(token)-1] == ']' {
-		var slice []int
-		err := json.Unmarshal([]byte(token), &slice)
+	fn = []int{-1, -1}
+
+	exec := func() (ret bool) {
+		var obj interface{}
+		var slice []interface{}
+		err := json.Unmarshal([]byte(token), &obj)
 		if err != nil {
 			logger.Error(err)
-		} else {
-			fn = slice
+			return
+		}
+
+		dict, ok := obj.(map[string]interface{})
+		if ok {
+			obj, ok = dict[model]
+			if !ok {
+				return
+			}
+		}
+
+		slice, ok = obj.([]interface{})
+		if ok {
+			if len(slice) < 2 {
+				logger.Errorf("%s len < 2", token)
+				return
+			}
+			fn = []int{int(slice[0].(float64)), int(slice[1].(float64))}
+			return true
 		}
 		return
 	}
 
-	slice := pkg.Config.GetIntSlice("lmsys")
-	if len(slice) >= 2 {
-		fn = slice[:2]
+	if len(token) > 2 && ((token[0] == '[' && token[len(token)-1] == ']') || (token[0] == '{' && token[len(token)-1] == '}')) {
+		if exec() {
+			return
+		}
 	}
 
-	fn = []int{49, 109}
+	token = pkg.Config.GetString("lmsys")
+	exec()
 	return
 }
 
@@ -415,7 +437,7 @@ label:
 		Context(ctx).
 		Proxies(proxies).
 		GET(baseUrl+"/info").
-		Ja3("yes").
+		Ja3().
 		Header("pragma", "no-cache").
 		Header("cache-control", "no-cache").
 		Header("Accept-Language", "en-US,en;q=0.9").
