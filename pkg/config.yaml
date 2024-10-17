@@ -78,8 +78,7 @@ bing:
 claude:
   pad: 0
   cookies:
-    - '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'
-    - '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'
+    - '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'
 
 you:
   helper: 8082
