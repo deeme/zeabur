@@ -15,7 +15,7 @@ server-conn:
 flags: true
 
 # 图片访问
-domain: "https://gitdeem-all.hf.space"
+domain: "https://all.zeabur.app"
 
 # 内调llm，用于绘图时文本转tags
 llm:
