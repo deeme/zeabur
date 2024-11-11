@@ -75,21 +75,6 @@ cohere:
 bing:
   base-url: "https://edgeservices.bing.com/edgesvc"
 
-coze:
-  websdk:
-    counter: 3
-    model: claude-35-sonnet-200k
-    accounts:
-     - email: kafka9139@gmail.com
-       password: gmi234567.
-       validate: bingco.zn@gmail.com
-     - email: k92558472@gmail.com
-       password: gm12345678.
-       validate: bingco.zn@gmail.com
-     - email: kafka1052@gmail.com
-       password: gm12345678.
-       validate: bingco.zn@gmail.com
-
 interpreter:
   base-url: http://127.0.0.1:8000
   echo-code: true
