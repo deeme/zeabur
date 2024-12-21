@@ -26,7 +26,7 @@ llm:
 # lmsys fn、 trigger，支持多模型参数映射，json格式
 lmsys: |
   {
-    "claude-3-5-sonnet-20240620": [ 70, 124 ]
+    "claude-3-5-sonnet-20240620": [ 106 , 156 ]
   }
 
 # hf 绘图接口配置化

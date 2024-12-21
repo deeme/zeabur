@@ -45,7 +45,7 @@ var (
 			// 获取 PORT 环境变量
 			port := os.Getenv("PORT")
 			if port == "" {
-				port = "8080" // 默认端口
+				port = "5003" // 默认端口
 			}
 
 			// 将端口字符串转换为整数
