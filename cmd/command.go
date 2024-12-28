@@ -10,12 +10,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
-	"strconv"
 )
 
 var (
 	version  = "v2.1.0"
+	port     int
 	logLevel = "info"
 	logPath  = "log"
 	vms      bool
@@ -41,20 +40,7 @@ var (
 
 			pkg.InitConfig()
 			common.InitCommon()
-
-			// 获取 PORT 环境变量
-			port := os.Getenv("PORT")
-			if port == "" {
-				port = "5003" // 默认端口
-			}
-
-			// 将端口字符串转换为整数
-			portInt, err := strconv.Atoi(port)
-			if err != nil {
-				logrus.Fatalf("无效的端口号: %s", port)
-			}
-
-			handler.Bind(portInt, version, vars.Proxies)
+			handler.Bind(port, version, vars.Proxies)
 		},
 	}
 )
@@ -70,6 +56,7 @@ func banner() {
 
 func main() {
 	cmd.PersistentFlags().StringVar(&vars.Proxies, "proxies", "", "本地代理 proxies")
+	cmd.PersistentFlags().IntVar(&port, "port", 8080, "服务端口 port")
 	cmd.PersistentFlags().StringVar(&logLevel, "log", logLevel, "日志级别: trace|debug|info|warn|error")
 	cmd.PersistentFlags().StringVar(&logPath, "log-path", logPath, "日志路径")
 	cmd.PersistentFlags().BoolVar(&vms, "models", false, "查看所有模型")
